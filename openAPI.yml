@@ -1,0 +1,305 @@
+---
+openapi: 3.0.2
+info:
+    title: Simple Transformation app
+    description: MarketPlace simple transformation app
+    contact:
+        name: Pablo de Andres
+        url: https://materials-marketplace.eu/
+        email: pablo.de.andres@iwm.fraunhofer.de
+    license:
+        name: MIT
+        url: https://opensource.org/licenses/MIT
+    version: 1.0.0
+    x-api-version: 0.4.0
+    x-products:
+        - name: Monthly
+servers:
+    - url: https://simple-transformation.materials-data.space
+
+paths:
+    /heartbeat:
+        get:
+            summary: Check if app is alive
+            operationId: heartbeat
+            responses:
+                '200':
+                    description: Successful Response
+                    content:
+                        application/json:
+                            schema: {}
+    /transformations:
+        get:
+            summary: Get all transformations.
+            operationId: getTransformationList
+            responses:
+                '200':
+                    description: Successful Response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/TransformationListResponse'
+        post:
+            summary: Create a new transformation
+            operationId: newTransformation
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/TransformationInput'
+                required: true
+            responses:
+                '200':
+                    description: Successful Response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/TransformationCreateResponse'
+                '422':
+                    description: Validation Error
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/HTTPValidationError'
+    /transformations/{transformation_id}:
+        delete:
+            summary: Delete a transformation
+            operationId: deleteTransformation
+            parameters:
+                - required: true
+                  schema:
+                      title: Transformation Id
+                      type: string
+                      format: uuid4
+                  name: transformation_id
+                  in: path
+            responses:
+                '200':
+                    description: Successful Response
+                    content:
+                        application/json:
+                            schema: {}
+                '422':
+                    description: Validation Error
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/HTTPValidationError'
+        patch:
+            summary: Update the state of the transformation.
+            operationId: updateTransformation
+            parameters:
+                - required: true
+                  schema:
+                      title: Transformation Id
+                      type: string
+                      format: uuid4
+                  name: transformation_id
+                  in: path
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/TransformationUpdateModel'
+                required: true
+            responses:
+                '200':
+                    description: Successful Response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/TransformationUpdateResponse'
+                '400':
+                    description: Requested state not supported
+                '404':
+                    description: Not Found.
+                '422':
+                    description: Validation Error
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/HTTPValidationError'
+    /transformations/{transformation_id}/state:
+        get:
+            summary: Get the state of the transformation.
+            operationId: getTransformationState
+            parameters:
+                - required: true
+                  schema:
+                      title: Transformation Id
+                      type: string
+                      format: uuid4
+                  name: transformation_id
+                  in: path
+            responses:
+                '200':
+                    description: Successful Response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/TransformationStateResponse'
+                '404':
+                    description: Unknown transformation
+                '422':
+                    description: Validation Error
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/HTTPValidationError'
+    /datasets/{transformation_id}:
+        get:
+            summary: Get a transformation's result
+            operationId: getDataset
+            parameters:
+                - required: true
+                  schema:
+                      title: Transformation Id
+                      type: string
+                      format: uuid4
+                  name: transformation_id
+                  in: path
+            responses:
+                '200':
+                    description: Successful Response
+                    content:
+                        application/json:
+                            schema: {}
+                '422':
+                    description: Validation Error
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/HTTPValidationError'
+components:
+    schemas:
+        HTTPValidationError:
+            title: HTTPValidationError
+            type: object
+            properties:
+                detail:
+                    title: Detail
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/ValidationError'
+        TransformationCreateResponse:
+            title: TransformationCreateResponse
+            required:
+                - id
+            type: object
+            properties:
+                id:
+                    title: Id
+                    type: string
+                    format: uuid4
+        TransformationInput:
+            title: TransformationInput
+            type: object
+            properties:
+                stiffness:
+                    title: Stiffness
+                    type: number
+                    default: 78
+                displacement:
+                    title: Displacement
+                    type: number
+                    default: 3
+        TransformationListResponse:
+            title: TransformationListResponse
+            required:
+                - items
+            type: object
+            properties:
+                items:
+                    title: Items
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/TransformationModel'
+        TransformationModel:
+            title: TransformationModel
+            required:
+                - id
+                - parameters
+            type: object
+            properties:
+                id:
+                    title: Id
+                    type: string
+                    format: uuid4
+                parameters:
+                    title: Parameters
+                    type: object
+                state:
+                    $ref: '#/components/schemas/TransformationState'
+        TransformationState:
+            title: TransformationState
+            enum:
+                - CREATED
+                - RUNNING
+                - STOPPED
+                - COMPLETED
+                - FAILED
+            type: string
+            description: An enumeration.
+        TransformationStateResponse:
+            title: TransformationStateResponse
+            required:
+                - id
+                - state
+            type: object
+            properties:
+                id:
+                    title: Id
+                    type: string
+                    format: uuid4
+                state:
+                    $ref: '#/components/schemas/TransformationState'
+        TransformationUpdateModel:
+            title: TransformationUpdateModel
+            required:
+                - state
+            type: object
+            properties:
+                state:
+                    title: State
+                    enum:
+                        - RUNNING
+                        - STOPPED
+                    type: string
+        TransformationUpdateResponse:
+            title: TransformationUpdateResponse
+            required:
+                - id
+                - state
+            type: object
+            properties:
+                id:
+                    title: Id
+                    type: string
+                    format: uuid4
+                state:
+                    title: State
+                    enum:
+                        - RUNNING
+                        - STOPPED
+                    type: string
+        ValidationError:
+            title: ValidationError
+            required:
+                - loc
+                - msg
+                - type
+            type: object
+            properties:
+                loc:
+                    title: Location
+                    type: array
+                    items:
+                        anyOf:
+                            - type: string
+                            - type: integer
+                msg:
+                    title: Message
+                    type: string
+                type:
+                    title: Error Type
+                    type: string
