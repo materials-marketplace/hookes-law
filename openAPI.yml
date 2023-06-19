@@ -18,6 +18,10 @@ servers:
     - url: https://simple-transformation.materials-data.space
 
 paths:
+    /:
+        get:
+            summary: Frontend
+            operationId: frontend
     /heartbeat:
         get:
             summary: Check if app is alive

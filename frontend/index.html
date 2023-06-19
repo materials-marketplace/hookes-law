@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Hooke's Law</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <h1>Hooke's Law</h1>
+
+    <form id="computationForm">
+      <div>
+        <label for="stiffness">Stiffness</label>
+        <input type="number" id="stiffness" step="any" required />
+      </div>
+      <br />
+      <div>
+        <label for="displacement">Displacement</label>
+        <input type="number" id="displacement" step="any" required />
+      </div>
+
+      <button type="submit">Compute</button>
+    </form>
+
+    <div id="resultArea">
+      <p id="id"></p>
+      <p id="result"></p>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
