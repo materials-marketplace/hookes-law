@@ -13,6 +13,10 @@ class TransformationInput(BaseModel):
     displacement: float = 3.0
 
 
+class TransformationOutput(BaseModel):
+    result: float
+
+
 class HookesLaw:
     """Manage a Hooke's Law calculation."""
 
@@ -20,7 +24,7 @@ class HookesLaw:
         self.id: str = str(uuid.uuid4())
         self.parameters = transformation_input
         self.state: TransformationState = TransformationState.CREATED
-        self.result = None
+        self.result: TransformationOutput
 
     def run(self):
         """
@@ -30,17 +34,25 @@ class HookesLaw:
             RuntimeError: when the transformation has already ran
         """
         if self.state != TransformationState.CREATED:
-            msg = f"Simulation '{self.job_id}' already run."
+            msg = f"Simulation '{self.id}' already run."
             logging.error(msg)
             raise RuntimeError(msg)
-        self.compute_hookes_law()
+        result = self.compute_hookes_law(
+            self.parameters.stiffness, self.parameters.displacement
+        )
+        self.result = TransformationOutput(result=result)
         self.state = TransformationState.COMPLETED
-        logging.info(f"Simulation '{self.job_id}' started successfully.")
+        logging.info(f"Simulation '{self.id}' started successfully.")
 
-    def compute_hookes_law(self):
-        """
-        Carry out the calculation.
+    @staticmethod
+    def compute_hookes_law(stiffness: float, displacement: float) -> float:
+        """Compute a force via Hooke's Law (F = kx)
 
-        Read the relevant parameters and update the transformation result.
+        Args:
+            stiffness (float): stiffness constant (k)
+            displacement (float): displacement on a body (x)
+
+        Returns:
+            float: computed force (F)
         """
-        self.result = self.parameters.stiffness * self.parameters.displacement
+        return stiffness * displacement

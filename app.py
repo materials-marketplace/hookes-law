@@ -13,7 +13,7 @@ from marketplace_standard_app_api.models.transformation import (
     TransformationUpdateResponse,
 )
 
-from transformation import HookesLaw, TransformationInput
+from transformation import HookesLaw, TransformationInput, TransformationOutput
 
 app = FastAPI()
 
@@ -131,7 +131,7 @@ async def get_transformations():
             "parameters": transformation.parameters,
             "state": transformation.state,
         }
-        for transformation in transformations
+        for transformation in transformations.values()
     ]
 
     logging.info(f"transformations: {items}")
@@ -158,8 +158,9 @@ async def delete_transformation(transformation_id: TransformationId):
     "/datasets/{transformation_id}",
     summary="Get a transformation's result",
     operation_id="getDataset",
+    response_model=TransformationOutput,
 )
-async def get_results(transformation_id: TransformationId, response: Response):
+async def get_results(transformation_id: TransformationId):
     try:
         transformation = transformations[str(transformation_id)]
         if transformation.state != TransformationState.COMPLETED:

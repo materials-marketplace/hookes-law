@@ -1,7 +1,4 @@
-oauth2.json
-secrets/*
 .vscode
-simulation_files
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
