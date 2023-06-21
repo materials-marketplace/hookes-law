@@ -1,8 +1,10 @@
-"""App for a sample transformation."""
+"""Simple transformation app for Hooke's Law."""
 import logging
 
-from fastapi import FastAPI, HTTPException, Response
+from fastapi import FastAPI, HTTPException
 from fastapi.openapi.utils import get_openapi
+from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
 from marketplace_standard_app_api.models.transformation import (
     TransformationCreateResponse,
     TransformationId,
@@ -16,13 +18,14 @@ from marketplace_standard_app_api.models.transformation import (
 from transformation import HookesLaw, TransformationInput, TransformationOutput
 
 app = FastAPI()
+app.mount("/frontend", StaticFiles(directory="frontend"), name="frontend")
 
 
 def custom_openapi():
     if app.openapi_schema:
         return app.openapi_schema
     openapi_schema = get_openapi(
-        title="Simple Transformation app",
+        title="Hooke's Law app",
         description="MarketPlace simple transformation app",
         version="1.0.0",
         contact={
@@ -34,9 +37,7 @@ def custom_openapi():
             "name": "MIT",
             "url": "https://opensource.org/licenses/MIT",
         },
-        servers=[
-            {"url": "https://simple-transformation.materials-data.space"}
-        ],
+        servers=[{"url": "https://hookes-law.materials-data.space"}],
         routes=app.routes,
     )
     openapi_schema["info"]["x-api-version"] = "0.4.0"
@@ -49,6 +50,21 @@ app.openapi = custom_openapi
 
 
 transformations = dict()
+
+
+@app.get("/", summary="Frontend", operation_id="frontend")
+async def get_index():
+    return FileResponse("frontend/index.html")
+
+
+@app.get("/script.js")
+async def get_script():
+    return FileResponse("frontend/script.js")
+
+
+@app.get("/styles.css")
+async def get_styles():
+    return FileResponse("frontend/styles.css")
 
 
 @app.get(

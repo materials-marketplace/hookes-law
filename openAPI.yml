@@ -18,6 +18,10 @@ servers:
     - url: https://simple-transformation.materials-data.space
 
 paths:
+    /:
+        get:
+            summary: Frontend
+            operationId: frontend
     /heartbeat:
         get:
             summary: Check if app is alive
@@ -195,12 +199,12 @@ components:
             title: TransformationInput
             type: object
             properties:
-                stiffness:
-                    title: Stiffness
+                youngsModulus:
+                    title: YoungsModulus
                     type: number
                     default: 78
-                displacement:
-                    title: Displacement
+                strain:
+                    title: Strain
                     type: number
                     default: 3
         TransformationListResponse:

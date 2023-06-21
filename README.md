@@ -1,9 +1,8 @@
-# Simple transformation App
+# Hooke's Law App
 
-This repository contains the code for a simple MarketPlace transformation app.
+This repository contains the code for a simple MarketPlace transformation app based on Hooke's Law.
 
-As a simple transformation, Hooke's Law has been chosen.
-A fully functioning app that allows to create, query and update transformations has been developed using FastAPI
+A fully functioning app that allows to create, query and update transformations has been developed using FastAPI.
 
 ## Authors
 
