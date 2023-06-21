@@ -2,8 +2,8 @@ document.getElementById("computationForm").addEventListener("submit", function (
   event.preventDefault(); // Prevent form submission
 
   // Get input values
-  var stiffness = document.getElementById("stiffness").value;
-  var displacement = document.getElementById("displacement").value;
+  var youngsModulus = document.getElementById("youngsModulus").value;
+  var strain = document.getElementById("strain").value;
   var transformationId = null
 
   // Send form data to backend
@@ -12,7 +12,7 @@ document.getElementById("computationForm").addEventListener("submit", function (
     headers: {
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify({ stiffness: stiffness, displacement: displacement })
+    body: JSON.stringify({ youngsModulus: youngsModulus, strain: strain })
   })
     .then(responseCreate => responseCreate.json())
     .then(transformation => {
@@ -35,6 +35,6 @@ document.getElementById("computationForm").addEventListener("submit", function (
     })
     .then(responseResult => responseResult.json())
     .then(result => {
-      document.getElementById("result").innerText = "Result: " + result.result;
+      document.getElementById("result").innerText = "Stress [MPa]: " + result.result;
     });
 });

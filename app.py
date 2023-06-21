@@ -1,4 +1,4 @@
-"""App for a sample transformation."""
+"""Simple transformation app for Hooke's Law."""
 import logging
 
 from fastapi import FastAPI, HTTPException
@@ -25,7 +25,7 @@ def custom_openapi():
     if app.openapi_schema:
         return app.openapi_schema
     openapi_schema = get_openapi(
-        title="Simple Transformation app",
+        title="Hooke's Law app",
         description="MarketPlace simple transformation app",
         version="1.0.0",
         contact={
@@ -37,9 +37,7 @@ def custom_openapi():
             "name": "MIT",
             "url": "https://opensource.org/licenses/MIT",
         },
-        servers=[
-            {"url": "https://simple-transformation.materials-data.space"}
-        ],
+        servers=[{"url": "https://hookes-law.materials-data.space"}],
         routes=app.routes,
     )
     openapi_schema["info"]["x-api-version"] = "0.4.0"

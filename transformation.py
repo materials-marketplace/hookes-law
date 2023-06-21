@@ -8,9 +8,9 @@ from pydantic import BaseModel
 
 
 class TransformationInput(BaseModel):
-    # Default stiffness of gold at 20C
-    stiffness: float = 78
-    displacement: float = 3.0
+    # Default Young's Modulus of gold at 20C
+    youngsModulus: float = 79
+    strain: float = 3.0
 
 
 class TransformationOutput(BaseModel):
@@ -38,21 +38,21 @@ class HookesLaw:
             logging.error(msg)
             raise RuntimeError(msg)
         result = self.compute_hookes_law(
-            self.parameters.stiffness, self.parameters.displacement
+            self.parameters.youngsModulus, self.parameters.strain
         )
         self.result = TransformationOutput(result=result)
         self.state = TransformationState.COMPLETED
         logging.info(f"Simulation '{self.id}' started successfully.")
 
     @staticmethod
-    def compute_hookes_law(stiffness: float, displacement: float) -> float:
-        """Compute a force via Hooke's Law (F = kx)
+    def compute_hookes_law(youngs_modulus: float, strain: float) -> float:
+        """Compute strain via Hooke's Law (σ = Eε)
 
         Args:
-            stiffness (float): stiffness constant (k)
-            displacement (float): displacement on a body (x)
+            youngs_modulus (float): youngs_modulus constant (E)
+            strain (float): strain on a body (ε)
 
         Returns:
-            float: computed force (F)
+            float: computed strain (σ)
         """
-        return stiffness * displacement
+        return youngs_modulus * strain

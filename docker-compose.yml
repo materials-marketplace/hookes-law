@@ -3,7 +3,7 @@ version: '3.6'
 
 services:
 
-    transformation_app:
+    hookes_law_app:
         build: .
         ports:
             - 8000:8000
