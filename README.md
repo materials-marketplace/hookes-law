@@ -1,4 +1,4 @@
-# Hooke_'s Law App
+# Hooke's Law App
 
 This repository contains the code for a simple MarketPlace transformation app based on Hooke's Law.
 
