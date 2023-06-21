@@ -52,7 +52,14 @@ app.openapi = custom_openapi
 transformations = dict()
 
 
-@app.get("/", summary="Frontend", operation_id="frontend")
+@app.get(
+    "/",
+    summary="Frontend",
+    operation_id="frontend",
+    responses={
+        200: {"content": {"text/html": {}}},
+    },
+)
 async def get_index():
     return FileResponse("frontend/index.html")
 

@@ -15,15 +15,24 @@ info:
     x-products:
         - name: Monthly
 servers:
-    - url: https://simple-transformation.materials-data.space
+    - url: https://hookes-law.materials-data.space
 
 paths:
     /:
         get:
+            security:
+                - bearerAuth: []
             summary: Frontend
             operationId: frontend
+            responses:
+                '200':
+                    description: Successful Response
+                    content:
+                        text/html:
     /heartbeat:
         get:
+            security:
+                - bearerAuth: []
             summary: Check if app is alive
             operationId: heartbeat
             responses:
@@ -34,6 +43,8 @@ paths:
                             schema: {}
     /transformations:
         get:
+            security:
+                - bearerAuth: []
             summary: Get all transformations.
             operationId: getTransformationList
             responses:
@@ -44,6 +55,8 @@ paths:
                             schema:
                                 $ref: '#/components/schemas/TransformationListResponse'
         post:
+            security:
+                - bearerAuth: []
             summary: Create a new transformation
             operationId: newTransformation
             requestBody:
@@ -67,6 +80,8 @@ paths:
                                 $ref: '#/components/schemas/HTTPValidationError'
     /transformations/{transformation_id}:
         delete:
+            security:
+                - bearerAuth: []
             summary: Delete a transformation
             operationId: deleteTransformation
             parameters:
@@ -90,6 +105,8 @@ paths:
                             schema:
                                 $ref: '#/components/schemas/HTTPValidationError'
         patch:
+            security:
+                - bearerAuth: []
             summary: Update the state of the transformation.
             operationId: updateTransformation
             parameters:
@@ -125,6 +142,8 @@ paths:
                                 $ref: '#/components/schemas/HTTPValidationError'
     /transformations/{transformation_id}/state:
         get:
+            security:
+                - bearerAuth: []
             summary: Get the state of the transformation.
             operationId: getTransformationState
             parameters:
@@ -152,6 +171,8 @@ paths:
                                 $ref: '#/components/schemas/HTTPValidationError'
     /datasets/{transformation_id}:
         get:
+            security:
+                - bearerAuth: []
             summary: Get a transformation's result
             operationId: getDataset
             parameters:
@@ -175,6 +196,11 @@ paths:
                             schema:
                                 $ref: '#/components/schemas/HTTPValidationError'
 components:
+    securitySchemes:
+        bearerAuth:
+            type: http
+            scheme: bearer
+            bearerFormat: JWT
     schemas:
         HTTPValidationError:
             title: HTTPValidationError
