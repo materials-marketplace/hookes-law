@@ -1,4 +1,5 @@
 """Simple transformation app for Hooke's Law."""
+
 import logging
 
 from fastapi import FastAPI, HTTPException
